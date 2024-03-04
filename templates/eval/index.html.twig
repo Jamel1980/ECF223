@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello EvalController!
+{% endblock %}
+
+{% block body %}
+<h1 class="card-title text-center my-2">LISTE EVALUATION TRIMESTRIELLE</h1>
+<div class="eval-container bg-white">
+    <div class="inner-container">
+        <div class="buttons d-flex justify-content-between my-3">
+            <a href="javascript:ajouter()" class="btn btn-dark btn-lg font-weigth-bold">Créer</a>
+            <a href="javascript:show()" class="btn btn-primary btn-lg font-weigth-bold">Afficher</a>
+            <a href="javascript:modify()" class="btn btn-success btn-lg font-weigth-bold">Modifier</a>
+            <a href="javascript:saisieNote()" class="btn btn-warning btn-lg font-weigth-bold">Saisie note et appreciation</a>
+            <a href="javascript:supprimer()" class="btn btn-danger btn-lg font-weigth-bold">Supprimer</a>
+        </div>
+
+
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead class="bg-dark">
+                    <tr class=" bg-danger inside bg-black">
+                        <th class="bg-dark text-light w5"></th>
+                        <th class="bg-dark text-light col-1 ">ANNEE SCOLAIRE</th>
+                        <th class="bg-dark text-light col-1 ">TRIMESTRE</th>
+                        <th class="bg-dark text-light col-3">N° EVALUATION</th>
+                        <th class="bg-dark text-light col-1 ">DATE EVALUATION</th>
+                        <th class="bg-dark text-light col-3 ">FORMATEUR</th>
+                        <th class="bg-dark text-light col-1 ">CLASSE</th>
+                        <th class="bg-dark text-light col-2 ">MATIERE</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody_eval">
+                    {% for line in evaluation %}
+                    <tr class="text-center">
+                        <td><input type="checkbox" name="check" class="form-check-input" id="{{line.id}}"
+                                value="{{line.id}}" onclick="onlyOne(this)"></td>
+                        <td>{{line.trimestre.anneescolaire.code}}</td>
+                        <td>{{line.trimestre.libelle}}</td>
+                        <td>{{line.numero}}</td>
+                        <td>{{ line.dateEvaluation|date('Y-m-d') }}</td>
+                        <td>{{line.individu.nom}}</td>
+                        <td>{{line.individu.classe.libelle}}</td>
+                        <td>{{line.matiere.libelle}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% block script %}
+<script>
+
+    const saisieNote = () => {
+        {
+            const url = "{{ path('app_saisir_note') }}";
+            document.location.href = url;
+        }
+    }
+    const ajouter = () => {
+        const url = "{{ path('app_eval_new',{'id':0}) }}";
+        document.location.href = url;
+    }
+
+    const modify = () => {
+        alert('Bonjour');
+    }
+
+    const supprimer = () => {
+        let id = getIdChecked('check');
+        if (id == 0) {
+            alert('Selectionner une ligne');
+        } else {
+            let response = confirm('Etes vous sur de vouloir supprimer? ');
+            if (response) {
+                const url = "{{ path('app_eval_delete',{'id':    'placeholder'}) }}";
+                const newUrl = url.replace('placeholder', id);
+                document.location.href = newUrl;
+            }
+        }
+    }
+</script>
+{% endblock %}
+{% endblock %}
